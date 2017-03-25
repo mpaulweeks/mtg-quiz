@@ -1,3 +1,5 @@
+import React, { Component } from 'react';
+import './App.css';
 
 function Title(card) {
   return (
@@ -7,7 +9,7 @@ function Title(card) {
   );
 }
 
-class Card extends React.Component {
+class Card extends Component {
   renderTitle() {
     const card = this.props.card;
     return <Square value={squares[i]} onClick={() => this.props.onClick(i)} />;
@@ -21,7 +23,7 @@ class Card extends React.Component {
   }
 }
 
-fetch('/data/AllCards.json')
+fetch('./AllCards.json')
   .then(function(response) {
   if (response.status >= 400) {
      throw new Error("Bad response from server");
@@ -36,3 +38,5 @@ fetch('/data/AllCards.json')
     document.getElementById('container')
   );
 });
+
+export default Card;
