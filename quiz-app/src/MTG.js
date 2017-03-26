@@ -10,17 +10,18 @@ class Card extends Component {
     const cData = props.cData;
     const display = {};
     display.name = cData.name;
+    display.cost = (cData.manaCost || '0').replace(/\{|\}/g, '');
     display.type = cData.type;
     display.body = cData.text || '';
     if (props.anonymize){
       display.name = '[CARD NAME]';
+      display.cost = '???';
       display.type = cData.types.join(' ');
       if (cData.type.indexOf('Equipment') !== -1){
         display.type += ' - Equipment';
       }
       display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
     }
-    display.prettyCost = (cData.manaCost || '0').replace(/\{|\}/g, '')
     display.pt = "";
     if (cData.hasOwnProperty('power')){
       display.pt = cData.power + '/' + cData.toughness;
@@ -47,7 +48,7 @@ class Card extends Component {
           })}
         </div>
         <div className="Card-cost">
-          {this.state.display.prettyCost}
+          {this.state.display.cost}
         </div>
         <div className="Card-pt">
           {this.state.display.pt}
