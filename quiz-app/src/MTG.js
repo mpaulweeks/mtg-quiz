@@ -49,8 +49,10 @@ function Manager(props) {
 }
 
 var MTG = {};
-window.MTG = MTG;
-MTG.rigData = function(data){
+MTG.filterData = function(data){
+  return data;
+};
+MTG.addMetaData = function(data){
   Object.keys(data).map(function (key) {
     var item = data[key];
     item.pt = function(){
@@ -59,10 +61,14 @@ MTG.rigData = function(data){
       }
       return "";
     };
+    return item;
   });
-  MTG.data = data;
+  return data;
+};
+MTG.rigData = function(data){
+  MTG.data = MTG.addMetaData(MTG.filterData(data));
   return MTG.data;
-}
+};
 MTG.init = function(){
   fetch('./AllCards.json')
     .then(function(response) {
@@ -78,6 +84,12 @@ MTG.init = function(){
         document.getElementById('root')
       );
     });
-}
+};
+MTG.publicAPI = function(){
+  return {
+    data: MTG.data,
+  }
+};
+window.MTG = MTG.publicAPI();
 
 export default MTG;
