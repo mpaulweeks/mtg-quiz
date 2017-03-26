@@ -5,15 +5,26 @@ import './App.css';
 class Card extends Component {
   render() {
     return (
-      <h3 className="card" onClick={() => this.props.onClick()}>
-        {this.props.data.name}
-      </h3>
+      <div className="card" onClick={() => this.props.onClick()}>
+        <div className="name">
+          {this.props.data.name}
+        </div>
+        <div className="type">
+          {this.props.data.type}
+        </div>
+        <div className="text">
+          {this.props.data.text.split("\n").map(function(line, index) {
+            return <div className="line" key={index}>{line}</div>
+          })}
+        </div>
+      </div>
     )
   }
 }
 
 function Manager(props) {
   const card = props.data['Masticore'];
+  console.log(card);
   return (
     <div>
       Hello
@@ -26,7 +37,6 @@ var MTG = {};
 MTG.init = function(){
   fetch('./AllCards.json')
     .then(function(response) {
-      console.log('loaded')
       if (response.status >= 400) {
          throw new Error("Bad response from server");
       }
