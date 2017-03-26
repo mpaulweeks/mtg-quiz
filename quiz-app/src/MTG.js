@@ -68,12 +68,9 @@ class Manager extends Component {
         <div className="Title">
           MTG QUIZ
         </div>
-        <div>
-          {this.state.cards[0].name}
-        </div>
         <div className="Container">
-          <Card key='1' cData={this.state.cards[0]} callback={this.reload} />
-          <Card key='2' cData={this.state.cards[1]} callback={this.reload} />
+          <Card key={this.state.cards[0].name} cData={this.state.cards[0]} callback={this.reload} />
+          <Card key={this.state.cards[1].name} cData={this.state.cards[1]} callback={this.reload} />
         </div>
         <div className="Options">
           Question
