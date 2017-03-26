@@ -9,6 +9,9 @@ class Card extends Component {
     super(props);
     const cData = props.cData;
     cData.aType = cData.types.join(' ');
+    if (cData.type.indexOf('Equipment') !== -1){
+      cData.aType += ' - Equipment';
+    }
     cData.body = cData.text || "";
     cData.aBody = cData.body.replace(new RegExp(cData.name, 'g'), '[CARD NAME]');
     cData.prettyCost = (cData.manaCost || '0').replace(/\{|\}/g, '')
