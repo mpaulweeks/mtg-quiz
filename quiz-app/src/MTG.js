@@ -114,7 +114,7 @@ MTG.get.cardCost = function(cData){
     if (key === 'A'){
       functionalCost += count;
     } else {
-      functionalCost += 2 * count;
+      functionalCost += 100 * count;
     }
   });
   cData.graphCost = {
@@ -145,7 +145,7 @@ MTG.drawGraph = function(dataArray){
     colorData.forEach(function(cData1){
       cData1.neighbors = [];
       colorData.forEach(function(cData2){
-        if(MTG.get.cardDistance(cData1, cData2) === 1 && cData1.cmc === cData2.cmc){
+        if(MTG.get.cardDistance(cData1, cData2) === 1){
           cData1.neighbors.push(cData2);
         }
       });
