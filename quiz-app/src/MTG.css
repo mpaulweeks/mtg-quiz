@@ -1,0 +1,37 @@
+.Manager {
+  width: 80%;
+  background-color: #ddeeee;
+  margin: 10px auto;
+  text-align: center;
+  font-size: 36pt;
+}
+
+.Container{
+  position: relative;
+}
+
+.Card {
+  width: 40%;
+  height: 200px;
+  display:inline-block;
+  margin: 10px;
+  text-align: left;
+  border: 2px solid black;
+  font-size: 12pt;
+}
+
+.Card-name, .Card-type, .Card-text {
+  margin: 10px;
+}
+
+.Card-name {
+  font-size: 16pt;
+}
+
+.Card-type {
+  font-weight: bold;
+}
+
+.Card-text-line {
+  margin-bottom: 5px;
+}
