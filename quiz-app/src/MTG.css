@@ -3,7 +3,14 @@
   background-color: #ddeeee;
   margin: 10px auto;
   text-align: center;
+}
+
+.Title {
   font-size: 36pt;
+}
+
+.Options {
+  font-size: 24pt;
 }
 
 .Container{
@@ -12,8 +19,9 @@
 
 .Card {
   width: 40%;
-  height: 200px;
+  min-height: 200px;
   display:inline-block;
+  vertical-align: top;
   margin: 10px;
   text-align: left;
   border: 2px solid black;

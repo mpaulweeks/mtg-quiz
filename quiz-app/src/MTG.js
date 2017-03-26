@@ -13,7 +13,7 @@ class Card extends Component {
           {this.props.data.type}
         </div>
         <div className="Card-text">
-          {this.props.data.text.split("\n").map(function(line, index) {
+          {(this.props.data.text || "").split("\n").map(function(line, index) {
             return <div className="Card-text-line" key={index}>{line}</div>
           })}
         </div>
@@ -23,15 +23,22 @@ class Card extends Component {
 }
 
 function Manager(props) {
-  const card1 = props.data['Masticore'];
-  const card2 = props.data['Fog'];
+  // const card1 = props.data['Cryptic Command'];
+  // const card2 = props.data['Fog'];
+  const card1 = props.data['Glory Seeker'];
+  const card2 = props.data['Soulless One'];
   console.log(card1);
   return (
     <div className="Manager">
-      MTG QUIZ
+      <div className="Title">
+        MTG QUIZ
+      </div>
       <div className="Container">
         <Card data={card1} />
         <Card data={card2} />
+      </div>
+      <div className="Options">
+        Question
       </div>
     </div>
   )
