@@ -17,22 +17,35 @@ class Card extends Component {
       cData.pt = cData.power + '/' + cData.toughness;
     }
     console.log(cData);
+    this.reveal = this.reveal.bind(this);
     this.state = {
       cData: cData,
-      callback: function(){props.callback(cData);},
+      aName: '[CARD NAME]',
+      aType: cData.aType,
+      aBody: cData.aBody,
+      callback: this.reveal,
+      parentCallback: function(){props.callback(cData);},
     }
+  }
+  reveal(e) {
+    this.setState({
+      aName: this.state.cData.name,
+      aType: this.state.cData.type,
+      aBody: this.state.cData.body,
+      callback: this.state.parentCallback,
+    })
   }
   render() {
     return (
       <div className={"Card " + (this.state.cData.pt ? 'has-pt' : '')} onClick={this.state.callback}>
         <div className="Card-name">
-          {this.state.cData.name}
+          {this.state.aName}
         </div>
         <div className="Card-type">
-          {this.state.cData.aType}
+          {this.state.aType}
         </div>
         <div className="Card-text">
-          {this.state.cData.aBody.split("\n").map(function(line, index) {
+          {this.state.aBody.split("\n").map(function(line, index) {
             return <div className="Card-text-line" key={index}>{line}</div>
           })}
         </div>
