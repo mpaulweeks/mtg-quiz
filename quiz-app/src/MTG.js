@@ -8,55 +8,49 @@ class Card extends Component {
   constructor(props) {
     super(props);
     const cData = props.cData;
-    cData.aType = cData.types.join(' ');
-    if (cData.type.indexOf('Equipment') !== -1){
-      cData.aType += ' - Equipment';
+    const display = {};
+    display.name = cData.name;
+    display.type = cData.type;
+    display.body = cData.text || '';
+    if (props.anonymize){
+      display.name = '[CARD NAME]';
+      display.type = cData.types.join(' ');
+      if (cData.type.indexOf('Equipment') !== -1){
+        display.type += ' - Equipment';
+      }
+      display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
     }
-    cData.body = cData.text || "";
-    cData.aBody = cData.body.replace(new RegExp(cData.name, 'g'), '[CARD NAME]');
-    cData.prettyCost = (cData.manaCost || '0').replace(/\{|\}/g, '')
-    cData.pt = "";
+    display.prettyCost = (cData.manaCost || '0').replace(/\{|\}/g, '')
+    display.pt = "";
     if (cData.hasOwnProperty('power')){
-      cData.pt = cData.power + '/' + cData.toughness;
+      display.pt = cData.power + '/' + cData.toughness;
     }
     console.log(cData);
-    this.reveal = this.reveal.bind(this);
     this.state = {
       cData: cData,
-      aName: '[CARD NAME]',
-      aType: cData.aType,
-      aBody: cData.aBody,
-      callback: this.reveal,
-      parentCallback: function(){props.callback(cData);},
+      display: display,
+      callback: function(){props.callback(cData);},
     }
-  }
-  reveal(e) {
-    this.setState({
-      aName: this.state.cData.name,
-      aType: this.state.cData.type,
-      aBody: this.state.cData.body,
-      callback: this.state.parentCallback,
-    })
   }
   render() {
     return (
-      <div className={"Card " + (this.state.cData.pt ? 'has-pt' : '')} onClick={this.state.callback}>
+      <div className={"Card " + (this.state.display.pt ? 'has-pt' : '')} onClick={this.state.callback}>
         <div className="Card-name">
-          {this.state.aName}
+          {this.state.display.name}
         </div>
         <div className="Card-type">
-          {this.state.aType}
+          {this.state.display.type}
         </div>
         <div className="Card-text">
-          {this.state.aBody.split("\n").map(function(line, index) {
+          {this.state.display.body.split("\n").map(function(line, index) {
             return <div className="Card-text-line" key={index}>{line}</div>
           })}
         </div>
         <div className="Card-cost">
-          {this.state.cData.prettyCost}
+          {this.state.display.prettyCost}
         </div>
         <div className="Card-pt">
-          {this.state.cData.pt}
+          {this.state.display.pt}
         </div>
       </div>
     )
@@ -66,16 +60,22 @@ class Card extends Component {
 class Manager extends Component {
   constructor(){
     super();
+    this.onClick = this.onClick.bind(this);
+    this.reload = this.reload.bind(this);
     this.state = {
       cards: MTG.randomPair(),
+      anonymize: true,
       right: 0,
       wrong: 0,
+      callback: this.onClick,
+      onClick: this.onClick,
+      reload: this.reload,
     };
-    this.reload = this.reload.bind(this);
   }
-  reload(chosenCard){
+  onClick(chosenCard){
     var newState = {
-      cards: MTG.randomPair()
+      anonymize: false,
+      callback: this.state.reload,
     };
     var winningCard = this.state.cards[0];
     if (this.state.cards[0].graphCost.functionalCost < this.state.cards[1].graphCost.functionalCost){
@@ -88,15 +88,28 @@ class Manager extends Component {
     }
     this.setState(newState);
   }
+  reload() {
+    this.setState({
+      anonymize: true,
+      callback: this.state.onClick,
+      cards: MTG.randomPair(),
+    });
+  }
   render() {
+    const anonymize = this.state.anonymize;
+    const callback = this.state.callback;
+    const card0 = this.state.cards[0];
+    const card0key = card0.name + anonymize;
+    const card1 = this.state.cards[1];
+    const card1key = card1.name + anonymize;
     return (
       <div className="Manager">
         <div className="Title">
           MTG QUIZ
         </div>
         <div className="Container">
-          <Card key={this.state.cards[0].name} cData={this.state.cards[0]} callback={this.reload} />
-          <Card key={this.state.cards[1].name} cData={this.state.cards[1]} callback={this.reload} />
+          <Card key={card0key} cData={card0} anonymize={anonymize} callback={callback} />
+          <Card key={card1key} cData={card1} anonymize={anonymize} callback={callback} />
         </div>
         <div className="Scoreboard">
           Right: {this.state.right}
