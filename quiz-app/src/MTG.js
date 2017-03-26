@@ -2,15 +2,24 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import './App.css';
 
-class Game extends Component {
+class Card extends Component {
   render() {
     return (
       <h3 className="card" onClick={() => this.props.onClick()}>
-        Hello <br/>
-        {this.props.card.name}
+        {this.props.data.name}
       </h3>
     )
   }
+}
+
+function Manager(props) {
+  const card = props.data['Masticore'];
+  return (
+    <div>
+      Hello
+      <Card data={card} />
+    </div>
+  )
 }
 
 var MTG = {};
@@ -24,11 +33,8 @@ MTG.init = function(){
       return response.json();
     })
     .then(function(data) {
-       console.log(data);
-       const card = data['Masticore'];
-       console.log(card);
-       ReactDOM.render(
-        <Game card={card} />,
+      ReactDOM.render(
+        <Manager data={data} />,
         document.getElementById('root')
       );
     });
