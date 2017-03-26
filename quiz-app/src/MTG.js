@@ -19,12 +19,12 @@ class Card extends Component {
     console.log(cData);
     this.state = {
       cData: cData,
-      callback: props.callback,
+      callback: function(){props.callback(cData);},
     }
   }
   render() {
     return (
-      <div className="Card" onClick={this.state.callback}>
+      <div className={"Card " + (this.state.cData.pt ? 'has-pt' : '')} onClick={this.state.callback}>
         <div className="Card-name">
           {this.state.cData.name}
         </div>
@@ -52,17 +52,25 @@ class Manager extends Component {
     super();
     this.state = {
       cards: MTG.randomPair(),
+      right: 0,
+      wrong: 0,
     };
     this.reload = this.reload.bind(this);
   }
-  reload(e){
-    console.log('reloading');
-    this.setState({
+  reload(chosenCard){
+    var newState = {
       cards: MTG.randomPair()
-    }, function(){
-      console.log('done rendering');
-      console.log(this.state.cards);
-    });
+    };
+    var winningCard = this.state.cards[0];
+    if (this.state.cards[0].graphCost.functionalCost < this.state.cards[1].graphCost.functionalCost){
+      winningCard = this.state.cards[1];
+    }
+    if (chosenCard.name === winningCard.name){
+      newState.right = this.state.right + 1;
+    } else {
+      newState.wrong = this.state.wrong + 1;
+    }
+    this.setState(newState);
   }
   render() {
     return (
@@ -74,8 +82,9 @@ class Manager extends Component {
           <Card key={this.state.cards[0].name} cData={this.state.cards[0]} callback={this.reload} />
           <Card key={this.state.cards[1].name} cData={this.state.cards[1]} callback={this.reload} />
         </div>
-        <div className="Options">
-          Question
+        <div className="Scoreboard">
+          Right: {this.state.right}
+          Wrong: {this.state.wrong}
         </div>
       </div>
     )

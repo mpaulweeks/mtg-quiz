@@ -29,6 +29,11 @@
   font-size: 12pt;
 }
 
+.Card.has-pt {
+  min-height: 170px;
+  padding-bottom: 30px;
+}
+
 .Card-name, .Card-type, .Card-text {
   margin: 10px;
 }
