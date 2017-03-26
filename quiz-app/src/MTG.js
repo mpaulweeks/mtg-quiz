@@ -8,7 +8,9 @@ class Card extends Component {
   constructor(props) {
     super(props);
     const cData = props.cData;
+    cData.aType = cData.types.join(' ');
     cData.body = cData.text || "";
+    cData.aBody = cData.body.replace(new RegExp(cData.name, 'g'), '[CARD NAME]');
     cData.prettyCost = (cData.manaCost || '0').replace(/\{|\}/g, '')
     cData.pt = "";
     if (cData.hasOwnProperty('power')){
@@ -27,10 +29,10 @@ class Card extends Component {
           {this.state.cData.name}
         </div>
         <div className="Card-type">
-          {this.state.cData.type}
+          {this.state.cData.aType}
         </div>
         <div className="Card-text">
-          {this.state.cData.body.split("\n").map(function(line, index) {
+          {this.state.cData.aBody.split("\n").map(function(line, index) {
             return <div className="Card-text-line" key={index}>{line}</div>
           })}
         </div>
@@ -156,7 +158,11 @@ MTG.filterData = function(data){
   var dataArray = Object.values(data);
   dataArray = dataArray.filter(function(cData){
     var cmc = cData.cmc || 0;
-    return 3 <= cmc && cmc <= 4;
+    var body = cData.text || "";
+    return (
+      2 <= cmc && cmc <= 6 &&
+      body.split('\n').length > 1
+    );
   })
   return dataArray;
 };
