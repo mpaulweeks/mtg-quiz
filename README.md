@@ -6,8 +6,7 @@ https://medium.freecodecamp.com/surge-vs-github-pages-deploying-a-create-react-a
 
 todo
 
-- add color, p/t
+- add color
 - filter all cards:
   - exclude planeswalkers
-  - require 2 lines of text
   - exclude gold cards
