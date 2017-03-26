@@ -17,16 +17,20 @@ class Card extends Component {
             return <div className="Card-text-line" key={index}>{line}</div>
           })}
         </div>
+        <div className="Card-pt">
+          {this.props.data.pt()}
+        </div>
       </div>
     )
   }
 }
 
 function Manager(props) {
-  // const card1 = props.data['Cryptic Command'];
+  const card1 = props.data['Cryptic Command'];
   // const card2 = props.data['Fog'];
-  const card1 = props.data['Glory Seeker'];
-  const card2 = props.data['Soulless One'];
+  // const card1 = props.data['Glory Seeker'];
+  // const card2 = props.data['Soulless One'];
+  const card2 = props.data['Monastery Mentor'];
   console.log(card1);
   return (
     <div className="Manager">
@@ -45,6 +49,20 @@ function Manager(props) {
 }
 
 var MTG = {};
+window.MTG = MTG;
+MTG.rigData = function(data){
+  Object.keys(data).map(function (key) {
+    var item = data[key];
+    item.pt = function(){
+      if (item.hasOwnProperty('power')){
+        return item.power + '/' + item.toughness;
+      }
+      return "";
+    };
+  });
+  MTG.data = data;
+  return MTG.data;
+}
 MTG.init = function(){
   fetch('./AllCards.json')
     .then(function(response) {
@@ -54,6 +72,7 @@ MTG.init = function(){
       return response.json();
     })
     .then(function(data) {
+      data = MTG.rigData(data);
       ReactDOM.render(
         <Manager data={data} />,
         document.getElementById('root')
