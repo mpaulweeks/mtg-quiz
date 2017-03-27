@@ -96,10 +96,7 @@ class Manager extends Component {
       anonymize: false,
       callback: this.state.reload,
     };
-    var winningCard = this.state.cards[0];
-    if (this.state.cards[0].graphCost.functionalCost < this.state.cards[1].graphCost.functionalCost){
-      winningCard = this.state.cards[1];
-    }
+    var winningCard = this.state.cards.winningCard;
     if (chosenCard.name === winningCard.name){
       newState.right = this.state.right + 1;
       newState.wasRight = true;
@@ -123,9 +120,9 @@ class Manager extends Component {
   render() {
     const anonymize = this.state.anonymize;
     const callback = this.state.callback;
-    const card0 = this.state.cards[0];
+    const card0 = this.state.cards.card1;
     const card0key = card0.name + anonymize;
-    const card1 = this.state.cards[1];
+    const card1 = this.state.cards.card2;
     const card1key = card1.name + anonymize;
     return (
       <div className="Manager">
@@ -179,14 +176,15 @@ function Error(){
 }
 
 MTG.get = {};
-MTG.get.cardCost = function(cData){
-  if (cData.graphCost){
-    return cData.graphCost;
+MTG.get.graphCost = function(cData){
+  if (cData._graphCost !== undefined){
+    return cData._graphCost;
   }
   if (!cData.manaCost || cData.manaCost.indexOf('/') > -1){
+    cData._graphCost = null;
     return null;
   }
-  var bins = {
+  const bins = {
     'A': 0,
     'C': 0,
     'W': 0,
@@ -195,7 +193,7 @@ MTG.get.cardCost = function(cData){
     'R': 0,
     'G': 0,
   };
-  var symbols = cData.manaCost.replace(/\{/g, '').split('}');
+  const symbols = cData.manaCost.replace(/\{/g, '').split('}');
   symbols.forEach(function (s){
     if (s.length > 0){
       var num = parseInt(s, 10);
@@ -215,17 +213,14 @@ MTG.get.cardCost = function(cData){
       functionalCost += 100 * count;
     }
   });
-  cData.graphCost = {
-    bins: bins,
-    functionalCost: functionalCost,
-  };
-  return cData.graphCost;
+  cData._graphCost = functionalCost;
+  return cData._graphCost;
 }
 MTG.get.cardDistance = function(cData1, cData2){
-  const cost1 = MTG.get.cardCost(cData1);
-  const cost2 = MTG.get.cardCost(cData2);
+  const cost1 = MTG.get.graphCost(cData1);
+  const cost2 = MTG.get.graphCost(cData2);
   if (cost1 && cost2){
-    return Math.abs(cost1.functionalCost - cost2.functionalCost);
+    return Math.abs(cost1 - cost2);
   }
   return null;
 }
@@ -292,7 +287,15 @@ MTG.random = function(arr){
 MTG.randomPair = function(){
   const cData1 = MTG.random(MTG.dataArray);
   const cData2 = MTG.random(cData1.neighbors);
-  return [cData1, cData2];
+  var winningCard = cData1;
+  if (MTG.get.graphCost(cData1) < MTG.get.graphCost(cData2)){
+    winningCard = cData2;
+  }
+  return {
+    card1: cData1,
+    card2: cData2,
+    winningCard: winningCard,
+  }
 }
 MTG.init = function(){
   ReactDOM.render(
