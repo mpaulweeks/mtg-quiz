@@ -92,8 +92,12 @@ class Manager extends Component {
     }
     if (chosenCard.name === winningCard.name){
       newState.right = this.state.right + 1;
+      newState.wasRight = true;
+      newState.wasWrong = false;
     } else {
       newState.wrong = this.state.wrong + 1;
+      newState.wasRight = false;
+      newState.wasWrong = true;
     }
     this.setState(newState);
   }
@@ -102,6 +106,8 @@ class Manager extends Component {
       anonymize: true,
       callback: this.state.onClick,
       cards: MTG.randomPair(),
+      wasRight: false,
+      wasWrong: false,
     });
   }
   render() {
@@ -118,14 +124,25 @@ class Manager extends Component {
         </div>
         One of these cards costs {1} more mana than the other.
         Click on the card you think costs more!
-        <div className="Container">
+        <div className="Scoreboard">
+          <div className="Right Container">
+            <div className={"Count" + (this.state.wasRight ? ' highlight' : '')}>
+              Right: {this.state.right}
+            </div>
+          </div>
+          <div className="Wrong Container">
+            <div className={"Count" + (this.state.wasWrong ? ' highlight' : '')}>
+              Wrong: {this.state.wrong}
+            </div>
+          </div>
+        </div>
+        <div className="Card-Container">
           <Card key={card0key} cData={card0} anonymize={anonymize} callback={callback} />
           <Card key={card1key} cData={card1} anonymize={anonymize} callback={callback} />
         </div>
-        <div className="Scoreboard">
-          Right: {this.state.right}
-          Wrong: {this.state.wrong}
-        </div>
+        {!anonymize &&
+          <div>Click again to continue.</div>
+        }
       </div>
     )
   }

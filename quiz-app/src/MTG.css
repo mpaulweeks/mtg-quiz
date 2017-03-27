@@ -4,19 +4,13 @@
   margin: 10px auto;
   text-align: center;
 }
-
 .Title {
   font-size: 36pt;
 }
 
-.Options {
-  font-size: 24pt;
-}
-
-.Container{
+.Card-Container{
   position: relative;
 }
-
 .Card {
   cursor: pointer;
   position: relative;
@@ -57,23 +51,18 @@
   min-height: 170px;
   padding-bottom: 30px;
 }
-
 .Card-name, .Card-type, .Card-text {
   margin: 10px;
 }
-
 .Card-name {
   font-size: 16pt;
 }
-
 .Card-type {
   font-weight: bold;
 }
-
 .Card-text-line {
   margin-bottom: 5px;
 }
-
 .Card-cost {
   font-size: 16pt;
   font-weight: bold;
@@ -81,11 +70,54 @@
   top: 10px;
   right: 20px;
 }
-
 .Card-pt {
   font-size: 16pt;
   font-weight: bold;
   position: absolute;
   bottom: 10px;
   right: 20px;
+}
+
+.Scoreboard {
+  position: relative;
+  margin-top: 10px;
+}
+.Scoreboard .Container {
+  width: 40%;
+  display:inline-block;
+}
+.Scoreboard .Container .Count {
+  width: auto;
+  display:inline-block;
+  text-align: center;
+  padding: 10px;
+  font-size: 20pt;
+}
+.Right.Container {
+  text-align: right;
+}
+.Right .Count.highlight {
+  animation: highlight-green 1s;
+}
+.Wrong.Container {
+  text-align: left;
+}
+.Wrong .Count.highlight {
+  animation: highlight-red 1s;
+}
+@keyframes highlight-green {
+  0% {
+    background-color: green
+  }
+  100% {
+    background-color: none;
+  }
+}
+@keyframes highlight-red {
+  0% {
+    background-color: red
+  }
+  100% {
+    background-color: none;
+  }
 }
