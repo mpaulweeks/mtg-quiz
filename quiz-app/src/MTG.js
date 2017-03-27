@@ -34,7 +34,7 @@ class Card extends Component {
         display.color = cData.colors[0];
       }
     }
-    console.log(cData);
+    // console.log(cData);
     this.state = {
       cData: cData,
       display: display,
@@ -116,6 +116,8 @@ class Manager extends Component {
         <div className="Title">
           MTG QUIZ
         </div>
+        One of these cards costs {1} more mana than the other.
+        Click on the card you think costs more!
         <div className="Container">
           <Card key={card0key} cData={card0} anonymize={anonymize} callback={callback} />
           <Card key={card1key} cData={card1} anonymize={anonymize} callback={callback} />
@@ -182,7 +184,7 @@ MTG.get.cardDistance = function(cData1, cData2){
 }
 MTG.drawGraph = function(dataArray){
   var byColors = {};
-  console.log('binning', dataArray.length);
+  // console.log('binning', dataArray.length);
   dataArray.forEach(function(cData){
     var colorKey = (cData.colors || []).join('|');
     byColors[colorKey] = byColors[colorKey] || [];
@@ -190,7 +192,7 @@ MTG.drawGraph = function(dataArray){
   });
   Object.keys(byColors).forEach(function(colorKey){
     var colorData = byColors[colorKey];
-    console.log('graphing', colorKey, colorData.length);
+    // console.log('graphing', colorKey, colorData.length);
     colorData.forEach(function(cData1){
       cData1.neighbors = [];
       colorData.forEach(function(cData2){
@@ -204,10 +206,10 @@ MTG.drawGraph = function(dataArray){
 MTG.filterData = function(data){
   var dataArray = Object.values(data);
   dataArray = dataArray.filter(function(cData){
-    var cmc = cData.cmc || 0;
+    // var cmc = cData.cmc || 0;
     var body = cData.text || "";
     return (
-      2 <= cmc && cmc <= 6 &&
+      // 2 <= cmc && cmc <= 6 &&
       body.split('\n').length > 1
     );
   })
