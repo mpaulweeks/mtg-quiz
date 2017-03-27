@@ -18,6 +18,7 @@
 }
 
 .Card {
+  cursor: pointer;
   position: relative;
   width: 40%;
   min-height: 200px;
@@ -25,8 +26,31 @@
   vertical-align: top;
   margin: 10px;
   text-align: left;
-  border: 2px solid black;
+  border: 10px solid black;
+  background-color: #ffe6b3;
   font-size: 12pt;
+}
+
+.Card-color-Colorless {
+  border-color: grey;
+}
+.Card-color-Gold {
+  border-color: gold;
+}
+.Card-color-White {
+  border-color: lightyellow;
+}
+.Card-color-Blue {
+  border-color: blue;
+}
+.Card-color-Black {
+  border-color: black;
+}
+.Card-color-Red {
+  border-color: red;
+}
+.Card-color-Green {
+  border-color: green;
 }
 
 .Card.has-pt {

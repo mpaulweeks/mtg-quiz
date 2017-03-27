@@ -26,6 +26,14 @@ class Card extends Component {
     if (cData.hasOwnProperty('power')){
       display.pt = cData.power + '/' + cData.toughness;
     }
+    display.color = 'Colorless';
+    if (cData.colors){
+      if (cData.colors.length > 1){
+        display.color = 'Gold';
+      } else if (cData.colors.length === 1){
+        display.color = cData.colors[0];
+      }
+    }
     console.log(cData);
     this.state = {
       cData: cData,
@@ -35,7 +43,7 @@ class Card extends Component {
   }
   render() {
     return (
-      <div className={"Card " + (this.state.display.pt ? 'has-pt' : '')} onClick={this.state.callback}>
+      <div className={"Card Card-color-" + this.state.display.color + (this.state.display.pt ? ' has-pt' : '')} onClick={this.state.callback}>
         <div className="Card-name">
           {this.state.display.name}
         </div>
@@ -248,9 +256,7 @@ MTG.init = function(){
     });
 };
 MTG.publicAPI = function(){
-  return {
-    data: MTG.data,
-  }
+  return MTG;
 };
 window.MTG = MTG.publicAPI();
 
