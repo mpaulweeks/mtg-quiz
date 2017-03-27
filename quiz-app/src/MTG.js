@@ -14,7 +14,7 @@ class Card extends Component {
     display.type = cData.type;
     display.body = cData.text || '';
     if (props.anonymize){
-      display.name = '[CARD NAME]';
+      display.name = 'CARDNAME';
       display.cost = '???';
       display.type = cData.types.join(' ');
       if (cData.type.indexOf(' — Equipment') !== -1){
