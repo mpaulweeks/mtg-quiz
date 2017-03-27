@@ -121,3 +121,12 @@
     background-color: none;
   }
 }
+
+img.symbol {
+  width: 15px;
+  height: 15px;
+}
+.Card-cost img.symbol {
+  width: 20px;
+  height: 20px;
+}

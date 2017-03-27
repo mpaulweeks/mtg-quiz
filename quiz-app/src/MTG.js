@@ -10,12 +10,12 @@ class Card extends Component {
     const cData = props.cData;
     const display = {};
     display.name = cData.name;
-    display.cost = (cData.manaCost || '{0}').replace(/\{|\}/g, '');
+    display.cost = (cData.manaCost || '{0}');
     display.type = cData.type;
     display.body = cData.text || '';
     if (props.anonymize){
       display.name = '[CARD NAME]';
-      display.cost = '';
+      display.cost = '???';
       display.type = cData.types.join(' ');
       if (cData.type.indexOf('Equipment') !== -1){
         display.type += ' - Equipment';
@@ -41,6 +41,13 @@ class Card extends Component {
       callback: function(){props.callback(cData);},
     }
   }
+  componentDidMount(){
+    var textNodes = Array.prototype.slice.call(document.getElementsByClassName('Card-text'));
+    var costNodes = Array.prototype.slice.call(document.getElementsByClassName('Card-cost'));
+    textNodes.concat(costNodes).forEach(function (node){
+      node.innerHTML = node.innerHTML.replace(/\{(\w)\}/g, '<img class="symbol" src="symbol/$1.svg" />');
+    });
+  }
   render() {
     return (
       <div className={"Card Card-color-" + this.state.display.color + (this.state.display.pt ? ' has-pt' : '')} onClick={this.state.callback}>
@@ -56,9 +63,7 @@ class Card extends Component {
           })}
         </div>
         <div className="Card-cost">
-          {this.state.display.cost ? Array.from(this.state.display.cost).map(function(s, index){
-            return <img key={index} src={'mana/' + s + '.svg'} width="20" height="20" />
-          }) : '???'}
+          {this.state.display.cost}
         </div>
         <div className="Card-pt">
           {this.state.display.pt}
