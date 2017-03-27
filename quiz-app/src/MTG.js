@@ -257,6 +257,7 @@ MTG.filterData = function(data){
     const isComplicated = (cData.text || "").split('\n').length > 1;
     const isWalker = (cData.type || '').indexOf("Planeswalker") !== -1;
     return (
+      cmc >= 1 &&
       cmc <= 8 &&
       isComplicated &&
       !isWalker
