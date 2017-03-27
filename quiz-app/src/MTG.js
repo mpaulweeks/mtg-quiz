@@ -168,6 +168,16 @@ function Loading(){
   )
 }
 
+function Error(){
+  return (
+    <div className="Manager">
+      <div className="Title">
+        there was an error loading AllCards.json
+      </div>
+    </div>
+  )
+}
+
 MTG.get = {};
 MTG.get.cardCost = function(cData){
   if (cData.graphCost){
@@ -288,7 +298,11 @@ MTG.init = function(){
   fetch('./AllCards.json')
     .then(function(response) {
       if (response.status >= 400) {
-         throw new Error("Bad response from server");
+        ReactDOM.render(
+          <Error />,
+          document.getElementById('root')
+        );
+        throw new Error("Bad response from server");
       }
       return response.json();
     })
