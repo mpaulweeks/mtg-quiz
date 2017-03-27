@@ -155,6 +155,16 @@ class Manager extends Component {
   }
 }
 
+function Loading(){
+  return (
+    <div className="Manager">
+      <div className="Title">
+        loading, please wait...
+      </div>
+    </div>
+  )
+}
+
 MTG.get = {};
 MTG.get.cardCost = function(cData){
   if (cData.graphCost){
@@ -266,6 +276,10 @@ MTG.randomPair = function(){
   return [cData1, cData2];
 }
 MTG.init = function(){
+  ReactDOM.render(
+    <Loading />,
+    document.getElementById('root')
+  );
   fetch('./AllCards.json')
     .then(function(response) {
       if (response.status >= 400) {
