@@ -10,12 +10,12 @@ class Card extends Component {
     const cData = props.cData;
     const display = {};
     display.name = cData.name;
-    display.cost = (cData.manaCost || '0').replace(/\{|\}/g, '');
+    display.cost = (cData.manaCost || '{0}').replace(/\{|\}/g, '');
     display.type = cData.type;
     display.body = cData.text || '';
     if (props.anonymize){
       display.name = '[CARD NAME]';
-      display.cost = '???';
+      display.cost = '';
       display.type = cData.types.join(' ');
       if (cData.type.indexOf('Equipment') !== -1){
         display.type += ' - Equipment';
@@ -56,7 +56,9 @@ class Card extends Component {
           })}
         </div>
         <div className="Card-cost">
-          {this.state.display.cost}
+          {this.state.display.cost ? Array.from(this.state.display.cost).map(function(s, index){
+            return <img key={index} src={'mana/' + s + '.svg'} width="20" height="20" />
+          }) : '???'}
         </div>
         <div className="Card-pt">
           {this.state.display.pt}
