@@ -107,7 +107,7 @@
 }
 @keyframes highlight-green {
   0% {
-    background-color: green
+    background-color: lightgreen
   }
   100% {
     background-color: none;
@@ -115,7 +115,7 @@
 }
 @keyframes highlight-red {
   0% {
-    background-color: red
+    background-color: salmon
   }
   100% {
     background-color: none;
