@@ -17,8 +17,11 @@ class Card extends Component {
       display.name = '[CARD NAME]';
       display.cost = '???';
       display.type = cData.types.join(' ');
-      if (cData.type.indexOf('Equipment') !== -1){
-        display.type += ' - Equipment';
+      if (cData.type.indexOf(' — Equipment') !== -1){
+        display.type += ' — Equipment';
+      }
+      if (cData.type.indexOf(' — Aura') !== -1){
+        display.type += ' — Aura';
       }
       display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
     }
@@ -240,11 +243,13 @@ MTG.drawGraph = function(dataArray){
 MTG.filterData = function(data){
   var dataArray = Object.values(data);
   dataArray = dataArray.filter(function(cData){
-    // var cmc = cData.cmc || 0;
-    var body = cData.text || "";
+    const cmc = cData.cmc || 0;
+    const isComplicated = (cData.text || "").split('\n').length > 1;
+    const isWalker = (cData.type || '').indexOf("Planeswalker") !== -1;
     return (
-      // 2 <= cmc && cmc <= 6 &&
-      body.split('\n').length > 1
+      cmc <= 8 &&
+      isComplicated &&
+      !isWalker
     );
   })
   return dataArray;
