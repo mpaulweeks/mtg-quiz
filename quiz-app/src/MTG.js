@@ -251,7 +251,10 @@ MTG.drawGraph = function(dataArray){
   });
 }
 MTG.filterData = function(data){
-  var dataArray = Object.values(data);
+  var dataArray = [];
+  Object.keys(data).forEach(function (key){
+    dataArray.push(data[key]);
+  });
   dataArray = dataArray.filter(function(cData){
     const cmc = cData.cmc || 0;
     const isComplicated = (cData.text || "").split('\n').length > 1;
