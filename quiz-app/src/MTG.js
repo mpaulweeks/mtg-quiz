@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from 'react-native';
 import ReactDOM from 'react-dom';
 import './MTG.css';
 
@@ -94,7 +95,7 @@ class Manager extends Component {
   onClick(chosenCard){
     var newState = {
       anonymize: false,
-      callback: this.state.reload,
+      callback: function(){},
     };
     var winningCard = this.state.cards.winningCard;
     if (chosenCard.name === winningCard.name){
@@ -148,7 +149,11 @@ class Manager extends Component {
           <Card key={card1key} cData={card1} anonymize={anonymize} callback={callback} />
         </div>
         {!anonymize &&
-          <div>Click again to continue.</div>
+          <Button
+            onPress={this.state.reload}
+            title="Next"
+            color="#841584"
+          />
         }
       </div>
     )
