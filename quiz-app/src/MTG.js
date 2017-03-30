@@ -4,15 +4,21 @@ import './MTG.css';
 
 const MTG = {};
 
+const Card = props => {
+  return <div></div>;
+}
+
 class Card extends Component {
   constructor(props) {
     super(props);
     const cData = props.cData;
-    const display = {};
-    display.name = cData.name;
-    display.cost = (cData.manaCost || '{0}');
-    display.type = cData.type;
-    display.body = cData.text || '';
+    const display = {
+      name: cData.name,
+      cost: (cData.manaCost || '{0}'),
+      type: cData.type,
+      body: cData.text || ''
+    };
+
     if (props.anonymize){
       display.name = 'CARDNAME';
       display.cost = '???';
@@ -51,7 +57,32 @@ class Card extends Component {
       node.innerHTML = node.innerHTML.replace(/\{(\w)\}/g, '<img class="symbol" src="symbol/$1.svg" />');
     });
   }
+
+  getSymbol(char) {
+    return <img class="symbol" src={`symbol/${char}.svg`} />
+  }
+
+  getCostNode() {
+    const parsedText = this.parseText(this.state.display.cost);
+    return this.state.display.cost;
+  }
+
+  parseText(string) {
+    return [
+      ['text', 0, 1, 'moreText']
+      []
+    ];
+  }
+
   render() {
+    this.props.cData.whatever
+
+    const {
+      cData,
+      anonymize
+    } = this.props
+
+
     return (
       <div className={"Card Card-color-" + this.state.display.color + (this.state.display.pt ? ' has-pt' : '')} onClick={this.state.callback}>
         <div className="Card-name">
@@ -66,7 +97,7 @@ class Card extends Component {
           })}
         </div>
         <div className="Card-cost">
-          {this.state.display.cost}
+          {this.getCostNode()}
         </div>
         <div className="Card-pt">
           {this.state.display.pt}
@@ -92,15 +123,19 @@ class Manager extends Component {
     };
   }
   onClick(chosenCard){
+    let name = "aasdasd";
+
     var newState = {
       anonymize: false,
       callback: this.state.reload,
     };
     var winningCard = this.state.cards.winningCard;
     if (chosenCard.name === winningCard.name){
-      newState.right = this.state.right + 1;
-      newState.wasRight = true;
-      newState.wasWrong = false;
+      Object.assign(newState, {
+        right: this.state.right + 1,
+        wasRight: true,
+        wasWrong: false
+      });
     } else {
       newState.wrong = this.state.wrong + 1;
       newState.wasRight = false;
