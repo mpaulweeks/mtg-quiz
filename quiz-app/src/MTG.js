@@ -75,34 +75,32 @@ function getCostNode(line) {
   });
 }
 
-class Card extends Component {
-  render() {
-    const {
-      display,
-      callback,
-    } = this.props
-    return (
-      <div className={`Card Card-color-${display.color} ${display.pt ? 'has-pt' : ''}`} onClick={callback}>
-        <div className="Card-name">
-          {display.name}
-        </div>
-        <div className="Card-type">
-          {display.type}
-        </div>
-        <div className="Card-text">
-          {display.body.split("\n").map(function(line, index) {
-            return <div className="Card-text-line" key={index}>{getCostNode(line)}</div>
-          })}
-        </div>
-        <div className="Card-cost">
-          {getCostNode(display.cost)}
-        </div>
-        <div className="Card-pt">
-          {display.pt}
-        </div>
+const Card = function(props){
+  const {
+    display,
+    callback,
+  } = props
+  return (
+    <div className={`Card Card-color-${display.color} ${display.pt ? 'has-pt' : ''}`} onClick={callback}>
+      <div className="Card-name">
+        {display.name}
       </div>
-    )
-  }
+      <div className="Card-type">
+        {display.type}
+      </div>
+      <div className="Card-text">
+        {display.body.split("\n").map(function(line, index) {
+          return <div className="Card-text-line" key={index}>{getCostNode(line)}</div>
+        })}
+      </div>
+      <div className="Card-cost">
+        {getCostNode(display.cost)}
+      </div>
+      <div className="Card-pt">
+        {display.pt}
+      </div>
+    </div>
+  )
 }
 
 class Manager extends Component {
