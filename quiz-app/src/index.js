@@ -1,4 +1,4 @@
-import MTG from './MTG';
+import View from './View';
 import './index.css';
 
-MTG.init();
+View.initApp();
