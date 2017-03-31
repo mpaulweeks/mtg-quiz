@@ -4,46 +4,42 @@ import './MTG.css';
 
 const MTG = {};
 
-class Card extends Component {
-  constructor(props) {
-    super(props);
-    const cData = props.cData;
-    const display = {};
-    display.name = cData.name;
-    display.cost = (cData.manaCost || '{0}');
-    display.type = cData.type;
-    display.body = cData.text || '';
-    if (props.anonymize){
-      display.name = 'CARDNAME';
-      display.cost = '???';
-      display.type = cData.types.join(' ');
-      if (cData.type.indexOf(' — Equipment') !== -1){
-        display.type += ' — Equipment';
-      }
-      if (cData.type.indexOf(' — Aura') !== -1){
-        display.type += ' — Aura';
-      }
-      display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
+function cardDisplayModel(cData, anonymize){
+  const display = {
+    id: cData.name,
+    name: cData.name,
+    cost: (cData.manaCost || '{0}'),
+    type: cData.type,
+    body: cData.text || '',
+    pt: "",
+    color: 'Colorless',
+  };
+  if (anonymize){
+    display.name = 'CARDNAME';
+    display.cost = '???';
+    display.type = cData.types.join(' ');
+    if (cData.type.indexOf(' — Equipment') !== -1){
+      display.type += ' — Equipment';
     }
-    display.pt = "";
-    if (cData.hasOwnProperty('power')){
-      display.pt = cData.power + '/' + cData.toughness;
+    if (cData.type.indexOf(' — Aura') !== -1){
+      display.type += ' — Aura';
     }
-    display.color = 'Colorless';
-    if (cData.colors){
-      if (cData.colors.length > 1){
-        display.color = 'Gold';
-      } else if (cData.colors.length === 1){
-        display.color = cData.colors[0];
-      }
-    }
-    // console.log(cData);
-    this.state = {
-      cData: cData,
-      display: display,
-      callback: function(){props.callback(cData);},
+    display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
+  }
+  if (cData.hasOwnProperty('power')){
+    display.pt = cData.power + '/' + cData.toughness;
+  }
+  if (cData.colors){
+    if (cData.colors.length > 1){
+      display.color = 'Gold';
+    } else if (cData.colors.length === 1){
+      display.color = cData.colors[0];
     }
   }
+  return display;
+}
+
+class Card extends Component {
   componentDidMount(){
     var textNodes = Array.prototype.slice.call(document.getElementsByClassName('Card-text'));
     var costNodes = Array.prototype.slice.call(document.getElementsByClassName('Card-cost'));
@@ -52,24 +48,28 @@ class Card extends Component {
     });
   }
   render() {
+    const {
+      display,
+      callback,
+    } = this.props
     return (
-      <div className={"Card Card-color-" + this.state.display.color + (this.state.display.pt ? ' has-pt' : '')} onClick={this.state.callback}>
+      <div className={`Card Card-color-${display.color} ${display.pt ? 'has-pt' : ''}`} onClick={callback}>
         <div className="Card-name">
-          {this.state.display.name}
+          {display.name}
         </div>
         <div className="Card-type">
-          {this.state.display.type}
+          {display.type}
         </div>
         <div className="Card-text">
-          {this.state.display.body.split("\n").map(function(line, index) {
+          {display.body.split("\n").map(function(line, index) {
             return <div className="Card-text-line" key={index}>{line}</div>
           })}
         </div>
         <div className="Card-cost">
-          {this.state.display.cost}
+          {display.cost}
         </div>
         <div className="Card-pt">
-          {this.state.display.pt}
+          {display.pt}
         </div>
       </div>
     )
@@ -97,7 +97,7 @@ class Manager extends Component {
       callback: this.state.reload,
     };
     var winningCard = this.state.cards.winningCard;
-    if (chosenCard.name === winningCard.name){
+    if (chosenCard.id === winningCard.name){
       newState.right = this.state.right + 1;
       newState.wasRight = true;
       newState.wasWrong = false;
@@ -122,8 +122,10 @@ class Manager extends Component {
     const callback = this.state.callback;
     const card0 = this.state.cards.card1;
     const card0key = card0.name + anonymize;
+    const display0 = cardDisplayModel(card0, anonymize);
     const card1 = this.state.cards.card2;
     const card1key = card1.name + anonymize;
+    const display1 = cardDisplayModel(card1, anonymize);
     return (
       <div className="Manager">
         <div className="Title">
@@ -144,8 +146,8 @@ class Manager extends Component {
           </div>
         </div>
         <div className="Card-Container">
-          <Card key={card0key} cData={card0} anonymize={anonymize} callback={callback} />
-          <Card key={card1key} cData={card1} anonymize={anonymize} callback={callback} />
+          <Card key={card0key} display={display0} callback={function(){callback(display0)}} />
+          <Card key={card1key} display={display1} callback={function(){callback(display1)}} />
         </div>
         {!anonymize &&
           <div>Click again to continue.</div>
