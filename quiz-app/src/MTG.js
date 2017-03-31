@@ -1,8 +1,10 @@
+import React from 'react';
 
 const MTG = {};
 
-MTG.get = {};
-MTG.get.graphCost = function(cData){
+// Namespace for stateless helper functions
+MTG.Calc = {};
+MTG.Calc.graphCost = function(cData){
   if (cData._graphCost !== undefined){
     return cData._graphCost;
   }
@@ -42,15 +44,18 @@ MTG.get.graphCost = function(cData){
   cData._graphCost = functionalCost;
   return cData._graphCost;
 }
-MTG.get.cardDistance = function(cData1, cData2){
-  const cost1 = MTG.get.graphCost(cData1);
-  const cost2 = MTG.get.graphCost(cData2);
+MTG.Calc.cardDistance = function(cData1, cData2){
+  const cost1 = MTG.Calc.graphCost(cData1);
+  const cost2 = MTG.Calc.graphCost(cData2);
   if (cost1 && cost2){
     return Math.abs(cost1 - cost2);
   }
   return null;
 }
-MTG.drawGraph = function(dataArray){
+MTG.Calc.random = function(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+MTG.Calc.drawGraph = function(dataArray){
   var byColors = {};
   // console.log('binning', dataArray.length);
   dataArray.forEach(function(cData){
@@ -64,14 +69,14 @@ MTG.drawGraph = function(dataArray){
     colorData.forEach(function(cData1){
       cData1.neighbors = [];
       colorData.forEach(function(cData2){
-        if(MTG.get.cardDistance(cData1, cData2) === 1){
+        if(MTG.Calc.cardDistance(cData1, cData2) === 1){
           cData1.neighbors.push(cData2);
         }
       });
     });
   });
 }
-MTG.filterData = function(data){
+MTG.Calc.filterData = function(data){
   var dataArray = [];
   Object.keys(data).forEach(function (key){
     dataArray.push(data[key]);
@@ -89,32 +94,23 @@ MTG.filterData = function(data){
   })
   return dataArray;
 };
-MTG.filterDataArray = function(dataArray){
+MTG.Calc.filterDataArray = function(dataArray){
   return dataArray.filter(function(cData){
     return cData.neighbors.length > 0;
   });
 };
-MTG.addMetaData = function(dataArray){
-  MTG.drawGraph(dataArray);
+MTG.Calc.addMetaData = function(dataArray){
+  MTG.Calc.drawGraph(dataArray);
   return dataArray;
 };
-MTG.rigData = function(data){
-  MTG.rawData = data;
-  MTG.dataArray = MTG.filterDataArray(
-    MTG.addMetaData(
-      MTG.filterData(data)
-    )
-  );
-  return MTG.dataArray;
-};
-MTG.random = function(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
-MTG.randomPair = function(){
-  const cData1 = MTG.random(MTG.dataArray);
-  const cData2 = MTG.random(cData1.neighbors);
+
+// Stateful container of card info
+MTG.Data = {};
+MTG.Data.randomPair = function(){
+  const cData1 = MTG.Calc.random(MTG.Data.dataArray);
+  const cData2 = MTG.Calc.random(cData1.neighbors);
   var winningCard = cData1;
-  if (MTG.get.graphCost(cData1) < MTG.get.graphCost(cData2)){
+  if (MTG.Calc.graphCost(cData1) < MTG.Calc.graphCost(cData2)){
     winningCard = cData2;
   }
   return {
@@ -123,9 +119,89 @@ MTG.randomPair = function(){
     winningCard: winningCard,
   }
 }
-MTG.publicAPI = function(){
+MTG.Data.init = function(data){
+  MTG.Data.rawData = data;
+  MTG.Data.dataArray = MTG.Calc.filterDataArray(
+    MTG.Calc.addMetaData(
+      MTG.Calc.filterData(data)
+    )
+  );
+};
+
+// ViewHelper is stateless funcs for Views
+MTG.ViewHelper = {};
+MTG.ViewHelper.parseText = function(line) {
+  const parts = [];
+  const openers = line.split('{');
+  openers.forEach(function (opener){
+    const oParts = opener.split('}');
+    if (oParts.length < 1 || oParts.length > 2){
+      throw line
+    }
+    let vanilla = oParts[0];
+    if (oParts.length === 2){
+      vanilla = oParts[1];
+      parts.push({
+        text: oParts[0],
+        isSymbol: true,
+      });
+    }
+    parts.push({
+      text: vanilla,
+      isSymbol: false,
+    });
+  })
+  return parts;
+};
+MTG.ViewHelper.getTextNode = function(line) {
+  const parts = MTG.ViewHelper.parseText(line);
+  return parts.map(function(part, index) {
+    if (part.isSymbol){
+      return <img key={index} className="symbol" alt={part.text} src={`symbol/${part.text}.svg`} />;
+    }
+    return part.text;
+  });
+};
+MTG.ViewHelper.cardDisplay = function(cData, anonymize, callback){
+  const display = {
+    id: cData.name,
+    key: cData.name + anonymize,
+    name: cData.name,
+    cost: (cData.manaCost || '{0}'),
+    type: cData.type,
+    body: cData.text || '',
+    pt: "",
+    color: 'Colorless',
+    callback: function(){callback(display)},
+  };
+  if (anonymize){
+    display.name = 'CARDNAME';
+    display.cost = '???';
+    display.type = cData.types.join(' ');
+    if (cData.type.indexOf(' — Equipment') !== -1){
+      display.type += ' — Equipment';
+    }
+    if (cData.type.indexOf(' — Aura') !== -1){
+      display.type += ' — Aura';
+    }
+    display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
+  }
+  if (cData.hasOwnProperty('power')){
+    display.pt = cData.power + '/' + cData.toughness;
+  }
+  if (cData.colors){
+    if (cData.colors.length > 1){
+      display.color = 'Gold';
+    } else if (cData.colors.length === 1){
+      display.color = cData.colors[0];
+    }
+  }
+  return display;
+};
+
+MTG.Public = function(){
   return MTG;
 };
-window.MTG = MTG.publicAPI();
+window.MTG = MTG.Public();
 
 export default MTG;
