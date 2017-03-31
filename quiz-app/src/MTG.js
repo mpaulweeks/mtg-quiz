@@ -39,14 +39,43 @@ function cardDisplayModel(cData, anonymize){
   return display;
 }
 
-class Card extends Component {
-  componentDidMount(){
-    var textNodes = Array.prototype.slice.call(document.getElementsByClassName('Card-text'));
-    var costNodes = Array.prototype.slice.call(document.getElementsByClassName('Card-cost'));
-    textNodes.concat(costNodes).forEach(function (node){
-      node.innerHTML = node.innerHTML.replace(/\{(\w)\}/g, '<img class="symbol" src="symbol/$1.svg" />');
+function renderSymbol(char, key) {
+  return <img className="symbol" alt={char} src={`symbol/${char}.svg`} key={key} />
+}
+function parseText(line) {
+  const parts = [];
+  const openers = line.split('{');
+  openers.forEach(function (opener){
+    const oParts = opener.split('}');
+    if (oParts.length < 1 || oParts.length > 2){
+      throw line
+    }
+    let vanilla = oParts[0];
+    if (oParts.length === 2){
+      vanilla = oParts[1];
+      parts.push({
+        text: oParts[0],
+        isSymbol: true,
+      });
+    }
+    parts.push({
+      text: vanilla,
+      isSymbol: false,
     });
-  }
+  })
+  return parts;
+}
+function getCostNode(line) {
+  const parts = parseText(line);
+  return parts.map(function(line, index) {
+    if (line.isSymbol){
+      return renderSymbol(line.text, index);
+    }
+    return line.text;
+  });
+}
+
+class Card extends Component {
   render() {
     const {
       display,
@@ -62,11 +91,11 @@ class Card extends Component {
         </div>
         <div className="Card-text">
           {display.body.split("\n").map(function(line, index) {
-            return <div className="Card-text-line" key={index}>{line}</div>
+            return <div className="Card-text-line" key={index}>{getCostNode(line)}</div>
           })}
         </div>
         <div className="Card-cost">
-          {display.cost}
+          {getCostNode(display.cost)}
         </div>
         <div className="Card-pt">
           {display.pt}
