@@ -40,6 +40,7 @@ View.Helper.getTextNode = function(line) {
 View.Helper.cardDisplay = function(cData, anonymize, callback){
   const display = {
     id: cData.name,
+    key: cData.name + anonymize,
     name: cData.name,
     cost: (cData.manaCost || '{0}'),
     type: cData.type,
@@ -103,53 +104,49 @@ const Card = function(props){
 class Manager extends Component {
   constructor(){
     super();
-    this.onClick = this.onClick.bind(this);
-    this.reload = this.reload.bind(this);
+    this.callback = this.callback.bind(this);
     this.state = {
       cards: MTG.randomPair(),
       anonymize: true,
       right: 0,
       wrong: 0,
-      callback: this.onClick,
-      onClick: this.onClick,
-      reload: this.reload,
     };
   }
-  onClick(chosenCard){
+  callback(chosenCard){
     var newState = {
-      anonymize: false,
-      callback: this.state.reload,
+      anonymize: !this.state.anonymize,
     };
-    var winningCard = this.state.cards.winningCard;
-    if (chosenCard.id === winningCard.name){
-      newState.right = this.state.right + 1;
-      newState.wasRight = true;
-      newState.wasWrong = false;
+    if (newState.anonymize){
+      Object.assign(newState, {
+        cards: MTG.randomPair(),
+        wasRight: false,
+        wasWrong: false,
+      });
     } else {
-      newState.wrong = this.state.wrong + 1;
-      newState.wasRight = false;
-      newState.wasWrong = true;
+      var winningCard = this.state.cards.winningCard;
+      if (chosenCard.id === winningCard.name){
+        Object.assign(newState, {
+          right: this.state.right + 1,
+          wasRight: true,
+          wasWrong: false,
+        });
+      } else {
+        Object.assign(newState, {
+          wrong: this.state.wrong + 1,
+          wasRight: false,
+          wasWrong: true,
+        });
+      }
     }
     this.setState(newState);
   }
-  reload() {
-    this.setState({
-      anonymize: true,
-      callback: this.state.onClick,
-      cards: MTG.randomPair(),
-      wasRight: false,
-      wasWrong: false,
-    });
-  }
   render() {
-    const anonymize = this.state.anonymize;
-    const callback = this.state.callback;
-    const card0 = this.state.cards.card1;
-    const card0key = card0.name + anonymize;
-    const display0 = View.Helper.cardDisplay(card0, anonymize, callback);
-    const card1 = this.state.cards.card2;
-    const card1key = card1.name + anonymize;
-    const display1 = View.Helper.cardDisplay(card1, anonymize, callback);
+    const {
+      anonymize,
+      cards,
+    } = this.state
+    const display1 = View.Helper.cardDisplay(cards.card1, anonymize, this.callback);
+    const display2 = View.Helper.cardDisplay(cards.card2, anonymize, this.callback);
     return (
       <div className="Manager">
         <div className="Title">
@@ -170,8 +167,8 @@ class Manager extends Component {
           </div>
         </div>
         <div className="Card-Container">
-          <Card key={card0key} display={display0} />
-          <Card key={card1key} display={display1} />
+          <Card key={display1.key} display={display1} />
+          <Card key={display2.key} display={display2} />
         </div>
         {!anonymize &&
           <div>Click again to continue.</div>
