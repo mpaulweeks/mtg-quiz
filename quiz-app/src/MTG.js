@@ -166,13 +166,14 @@ MTG.ViewHelper.cardDisplay = function(cData, anonymize, callback){
   const display = {
     id: cData.name,
     key: cData.name + anonymize,
+    anonymize: anonymize,
     name: cData.name,
     cost: (cData.manaCost || '{0}'),
     type: cData.type,
     body: cData.text || '',
     pt: "",
     color: 'Colorless',
-    callback: function(){callback(display)},
+    callback: function(){},
   };
   if (anonymize){
     display.name = 'CARDNAME';
@@ -185,6 +186,7 @@ MTG.ViewHelper.cardDisplay = function(cData, anonymize, callback){
       display.type += ' — Aura';
     }
     display.body = display.body.replace(new RegExp(cData.name, 'g'), display.name);
+    display.callback = function(){callback(display)};
   }
   if (cData.hasOwnProperty('power')){
     display.pt = cData.power + '/' + cData.toughness;
