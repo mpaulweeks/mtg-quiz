@@ -8,11 +8,18 @@
   font-size: 36pt;
 }
 
+.clickable {
+  cursor: pointer;
+}
+.Next {
+  padding: 8px 20px;
+  font-size: 16pt;
+}
+
 .Card-Container{
   position: relative;
 }
 .Card {
-  cursor: pointer;
   position: relative;
   width: 40%;
   min-height: 200px;

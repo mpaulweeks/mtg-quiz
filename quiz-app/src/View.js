@@ -8,7 +8,7 @@ const Card = function(props){
     display,
   } = props
   return (
-    <div className={`Card Card-color-${display.color} ${display.pt ? 'has-pt' : ''}`} onClick={display.callback}>
+    <div className={`Card Card-color-${display.color} ${display.pt ? 'has-pt' : ''} ${display.anonymize ? 'clickable' : ''}`} onClick={display.callback}>
       <div className="Card-name">
         {display.name}
       </div>
@@ -100,7 +100,9 @@ class Manager extends Component {
           <Card key={display2.key} display={display2} />
         </div>
         {!anonymize &&
-          <div>Click again to continue.</div>
+          <button className="Next clickable" onClick={this.callback}>
+            Next Card
+          </button>
         }
       </div>
     )
