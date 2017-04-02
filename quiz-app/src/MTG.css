@@ -1,7 +1,6 @@
 .Manager {
-  width: 80%;
-  /*background-color: #ddeeee;*/
-  margin: 10px auto;
+  padding: 10px;
+  margin: 0px 0px;
   text-align: center;
 }
 .Title {
@@ -14,6 +13,7 @@
 .Next {
   padding: 8px 20px;
   font-size: 16pt;
+  border-color: black;
 }
 
 .Card-Container{
@@ -21,7 +21,6 @@
 }
 .Card {
   position: relative;
-  width: 40%;
   min-height: 200px;
   display:inline-block;
   vertical-align: top;
@@ -90,11 +89,10 @@
   margin-top: 10px;
 }
 .Scoreboard .Container {
-  width: 40%;
+  width: 49%;
   display:inline-block;
 }
 .Scoreboard .Container .Count {
-  width: auto;
   display:inline-block;
   text-align: center;
   padding: 10px;
@@ -136,4 +134,14 @@ img.symbol {
 .Card-cost img.symbol {
   width: 20px;
   height: 20px;
+}
+
+@media screen and (min-width: 800px) {
+  // this css will only be used when the screen size is min 800px
+  .Manager {
+    width: 80%;
+  }
+  .Card {
+    width: 40%;
+  }
 }
