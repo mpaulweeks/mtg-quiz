@@ -10,7 +10,7 @@ const Card = function(props){
   return (
     <div className={`Card Card-color-${display.color} ${display.pt ? 'has-pt' : ''} ${display.anonymize ? 'clickable' : ''}`} onClick={display.callback}>
       <div className="Card-name">
-        {display.name}
+        <auto-card>{display.name}</auto-card>
       </div>
       <div className="Card-type">
         {display.type}
